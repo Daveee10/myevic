@@ -574,8 +574,8 @@ __myevic__ void InitDataFlash()
 
 	dfFWVersion	= 303;
 	MaxVWVolts	= 900;
-	MaxPower	= 750;
-	MaxTCPower	= 750;
+	MaxPower	= 800;
+	MaxTCPower	= 800;
 
 	myprintf( "  APROM Version ......................... [%d.%d%d]\n", 3, 0, 3 );
 	myprintf( "  Hardware Version ...................... [%d.%d%d]\n",
