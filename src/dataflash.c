@@ -115,10 +115,10 @@ __myevic__ void ResetDataFlash()
 	dfTCPower = MaxTCPower;
 	dfPuffCount = 0;
 	dfTimeCount = 0;
-	dfIsCelsius = 0;
+	dfIsCelsius = 1;
 	dfRezType = 1;
 	dfTempAlgo = 1;
-	dfTemp = 450;
+	dfTemp = 210;
 	dfResistance = 0;
 	dfStealthOn = 0;
 	dfUIVersion = 2;
