@@ -5,6 +5,9 @@
 
 //=========================================================================
 
+uint8_t	DisplayModel;
+uint8_t	DisplayCmdByte;
+
 uint8_t ScreenBuffer[SCREEN_BUFFER_SIZE] __attribute__((aligned(8)));
 
 const uint8_t ByteMaskRight[] = { 0x00, 0x01, 0x03,	0x07, 0x0F, 0x1F, 0x3F,	0x7F };
@@ -603,6 +606,24 @@ __myevic__ void DrawCircle( int x_centre, int y_centre, int r, int color, int fi
 			y --;
 			x ++;
 		}
+	}
+}
+
+
+//=========================================================================
+// Converts screen buffer in something readable
+//-------------------------------------------------------------------------
+__myevic__ void Screen2Bitmap( uint8_t *pu8Bitmap )
+{
+	switch ( DisplayModel )
+	{
+		case 0:
+			SSD1306_Screen2Bitmap( pu8Bitmap );
+			break;
+
+		case 1:
+			SSD1327_Screen2Bitmap( pu8Bitmap );
+			break;
 	}
 }
 

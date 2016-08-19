@@ -10,7 +10,14 @@
 extern uint16_t	ScreenDuration;
 extern uint8_t	Screen;
 
-extern uint8_t ShowDateFlag;
+extern uint8_t	ShowDateFlag;
+extern uint16_t	HideLogo;
+extern uint8_t	ShowWeakBatFlag;
+extern uint8_t	BatAnimLevel;
+
+extern uint8_t	EditItemIndex;
+extern uint16_t	EditModeTimer;
+extern uint8_t	EditTCRIndex;
 
 extern const uint8_t ScrSaveTimes[8];
 
@@ -147,6 +154,11 @@ extern const uint16_t String_None[];
 extern const uint16_t String_Screen[];
 extern const uint16_t String_Min[];
 extern const uint16_t String_VCOM[];
+extern const uint16_t String_Expert[];
+extern const uint16_t String_USB[];
+extern const uint16_t String_HID[];
+extern const uint16_t String_COM[];
+extern const uint16_t String_DSK[];
 
 //==============================================================================
 

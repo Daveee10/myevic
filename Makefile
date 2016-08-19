@@ -27,16 +27,13 @@ OBJS := $(NUVOSDK)/Device/Nuvoton/M451Series/Source/system_M451Series.o \
 
 MYEVIC_OBJS :=	src/myevic.o \
 				src/myprintf.o \
+				src/atomizer.o \
 				src/dataflash.o \
 				src/screens.o \
 				src/menus.o \
 				src/mainview.o \
 				src/battery.o \
 				src/events.o \
-				src/display.o \
-				src/SSD1306.o \
-				src/SSD1327.o \
-				src/atomizer.o \
 				src/myrtc.o \
 				src/miscs.o \
 				src/eh.o \
@@ -45,8 +42,13 @@ MYEVIC_OBJS :=	src/myevic.o \
 				src/megpio.o \
 				src/strings.o \
 				src/meusbd.o \
+				src/vcom.o \
+				src/storage.o \
 				src/flappy.o \
 				src/fbdata.o \
+				src/display.o \
+				src/SSD1306.o \
+				src/SSD1327.o \
 				src/main.o
 
 AEABI_OBJS := src/aeabi/aeabi_memset-thumb2.o \
@@ -168,6 +170,7 @@ LINKSCRIPT := linker.ld
 LDFLAGS += -u __aeabi_uldivmod
 LDFLAGS += $(LIBDIRS)
 LDFLAGS += -gc-sections -nostdlib -nostartfiles -T$(LINKSCRIPT)
+#LDFLAGS += --verbose --cref -Map=blah.map
 
 SRCDIR   = src
 INCDIR   = inc
@@ -196,6 +199,7 @@ $(TARGET).bin: $(OBJS_FIXPATH) $(MYEVIC_OBJS)
 	test -d $(OUTDIR) || mkdir $(OUTDIR)
 	$(LD) $(LDFLAGS) -o $(OUTDIR)/$(TARGET).elf --start-group $(LIBS) $(OBJS_FIXPATH) $(MYEVIC_OBJS) --end-group
 	$(OBJCOPY) -O binary -j .text -j .data $(OUTDIR)/$(TARGET).elf $(OUTDIR)/$(TARGET).bin
+	evic convert $(OUTDIR)/$(TARGET).bin -o $(OUTDIR)/$(TARGET)_enc.bin
 
 docs:
 	doxygen

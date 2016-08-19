@@ -43,6 +43,7 @@ typedef struct
 	int	nologo:1;
 	int anaclk:1;
 	int vcom:1;
+	int storage:1;
 }
 dfStatus_t;
 
@@ -258,6 +259,13 @@ extern dfStruct_t DataFlash;
 #define dfSecond		DFI(Second)
 
 #define gPlayfield		DataFlash.playfield
+
+
+//=========================================================================
+// Some globals
+
+extern uint8_t	UpdateDFTimer;
+extern uint8_t	UpdatePTTimer;
 
 
 //=========================================================================
