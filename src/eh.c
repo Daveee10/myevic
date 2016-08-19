@@ -401,7 +401,7 @@ __myevic__ void EventHandler()
 					GetTempCoef( dfTempCoefsTI );
 					break;
 				case 3:
-					TCR = 120;
+					TCR = 92;
 					break;
 				case 4:
 					TCR = dfTCRM[dfTCRIndex];
