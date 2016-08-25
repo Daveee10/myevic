@@ -647,17 +647,17 @@ __myevic__ void InitDataFlash()
 
 	dfFWVersion	= FWVERSION;
 
-	MaxVolts	= 900;
+	MaxVolts	= 1000;
 
 	if ( gFlags.is_mini )
 	{
-		MaxPower	= 750;
-		MaxTCPower	= 750;
+		MaxPower	= 800;
+		MaxTCPower	= 800;
 	}
 	else
 	{
-		MaxPower	= 800;
-		MaxTCPower	= 800;
+		MaxPower	= 900;
+		MaxTCPower	= 900;
 	}
 
 	myprintf( "  APROM Version ......................... [%d.%d%d]\n",
