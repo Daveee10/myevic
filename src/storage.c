@@ -230,7 +230,7 @@ const UFI_InquiryResponse_t MSC_InquiryResp =
 	0x00, // additional fields, none set
 	0x00, // additional fields, none set
 	"Joyetech", // 8-byte T10-assigned Vendor ID
-	"eVic VTC mini   ", // 16-byte product identification
+	"eVic VTC/VTwo[M]", // 16-byte product identification
 	"0001" // 4-byte product revision level
 };
 
@@ -531,7 +531,7 @@ const FAT16_Block0_t FAT16_Block0 =
 	{ 0 },
 	0x29,
 	0x12345678,
-	"VTCMINI    ",
+	"MYEVIC     ",
 	"FAT16   "
 };
 
@@ -562,7 +562,7 @@ FAT16_FileEntry_t;
 
 const FAT16_FileEntry_t VNFileEntry =
 {
-	"VCTMINI ",
+	"MYEVIC  ",
 	"   ",
 	0x08,
 	0,
@@ -882,14 +882,21 @@ __myevic__ void MSC_UnsupportedCommand()
 
 
 //=========================================================================
-__myevic__ void MSC_RequestSense()
+__myevic__ void MSC_SendSimpleResponse( uint8_t *data, uint32_t length )
 {
 	gTxDataIndex = 0;
-	gTxDataLength = sizeof(UFI_RQSenseData);
+	gTxDataLength = length;
 	gCSW.DataResidue -= gTxDataLength;
-	USBD_MemCopy( gTxDataBlock, (uint8_t*)&UFI_RQSenseData, gTxDataLength );
+	USBD_MemCopy( gTxDataBlock, data, gTxDataLength );
 	MSC_SendData();
 	MSC_AckCmd();
+}
+
+
+//=========================================================================
+__myevic__ void MSC_RequestSense()
+{
+	MSC_SendSimpleResponse( (uint8_t*)&UFI_RQSenseData, sizeof(UFI_RQSenseData) );
 }
 
 
@@ -963,24 +970,14 @@ __myevic__ void MSC_PreventMediaRemoval()
 //=========================================================================
 __myevic__ void MSC_ReadFormatCapacities()
 {
-	gTxDataIndex = 0;
-	gTxDataLength = sizeof(UFI_RFCResponse);
-	gCSW.DataResidue -= gTxDataLength;
-	USBD_MemCopy( gTxDataBlock, (uint8_t*)UFI_RFCResponse, gTxDataLength );
-	MSC_SendData();
-	MSC_AckCmd();
+	MSC_SendSimpleResponse( (uint8_t*)&UFI_RFCResponse, sizeof(UFI_RFCResponse) );
 }
 
 
 //=========================================================================
 __myevic__ void MSC_ReadCapacity()
 {
-	gTxDataIndex = 0;
-	gTxDataLength = sizeof(UFI_RCResponse);
-	gCSW.DataResidue -= gTxDataLength;
-	USBD_MemCopy( gTxDataBlock, (uint8_t*)UFI_RCResponse, gTxDataLength );
-	MSC_SendData();
-	MSC_AckCmd();
+	MSC_SendSimpleResponse( (uint8_t*)&UFI_RCResponse, sizeof(UFI_RCResponse) );
 }
 
 

@@ -408,6 +408,7 @@ __myevic__ void EventHandler()
 					GetTempCoef( dfTempCoefsTI );
 					break;
 				case 3:
+					// The original value of 120 is obviously way too high.
 					TCR = 92;
 					break;
 				case 4:
@@ -491,11 +492,9 @@ __myevic__ void EventHandler()
 				TargetVolts = 450;
 			}
 
-			BBCNextMode = 2;
-			BBCMode = 0;
 			SetADCState( 1, 1 );
 			SetADCState( 2, 1 );
-			ReachTargetVoltage();
+			AtoWarmUp();
 			if ( !(gFlags.firing) || LastInputs != 1 )
 				StopFire();
 			gFlags.refresh_display = 1;

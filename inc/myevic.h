@@ -11,6 +11,13 @@
 #define ISMODEVW(m) (((m)==4)||((m)==6))
 #define ISMODEBY(m) ((m)==5)
 
+#define FWVERSION 303
+
+#define ISVTCMINI (!gFlags.is_vtwo && gFlags.is_mini)
+#define ISVTWOMINI (gFlags.is_vtwo && gFlags.is_mini)
+#define ISVTWO (gFlags.is_vtwo && !gFlags.is_mini)
+
+
 //=============================================================================
 
 typedef struct
@@ -59,6 +66,8 @@ typedef struct
 	int	tick_1hz:1;
 	int	playing_fb:1;
 	int has_x32:1;
+	int is_vtwo:1;
+	int is_mini:1;
 }
 gFlags_t;
 

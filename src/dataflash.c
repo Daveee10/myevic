@@ -32,8 +32,41 @@ uint16_t	fmcCntrsIndex;
 //----- (00002064) --------------------------------------------------------
 __myevic__ void SetProductID()
 {
+	SYS_UnlockReg();
+	FMC_ENABLE_ISP();
+
 	dfProductID = *(uint32_t*)"E052";
 	dfMaxHWVersion = 0x00010101;
+	gFlags.is_vtwo = 0;
+	gFlags.is_mini = 1;
+
+	for ( uint32_t offset = 0 ; offset < LDROM_SIZE ; offset += 4 )
+	{
+		uint32_t u32Data = FMC_Read( LDROM_BASE + offset );
+		if ( u32Data == *(uint32_t*)"E115" )
+		{
+			dfProductID = u32Data;
+			dfMaxHWVersion = 0x00000001;
+			gFlags.is_vtwo = 1;
+			break;
+		}
+		else if ( u32Data == *(uint32_t*)"E043" )
+		{
+			dfProductID = u32Data;
+			dfMaxHWVersion = 0x00010001;
+			gFlags.is_vtwo = 1;
+			gFlags.is_mini = 0;
+			break;
+		}
+	}
+	
+	FMC_DISABLE_ISP();
+	SYS_LockReg();
+
+	if ( gFlags.is_vtwo )
+	{
+		gFlags.has_x32 = 1;
+	}
 }
 
 
@@ -168,7 +201,7 @@ __myevic__ void ResetDataFlash()
 	FMCWriteCounters();
 	dfContrast = 45;
 	dfModesSel = 0;
-	dfClkRatio = RTC_DEF_CLK_RATIO;
+	dfClkRatio = gFlags.is_vtwo ? 10000 : RTC_DEF_CLK_RATIO;
 }
 
 
@@ -181,7 +214,7 @@ __myevic__ void DFCheckValuesValidity()
 	if ( dfMode >= 7 )
 		dfMode = 4;
 
-	if ( dfVWVolts > MaxVWVolts || dfVWVolts < 50 )
+	if ( dfVWVolts > MaxVolts || dfVWVolts < 50 )
 		dfVWVolts = 330;
 
 	if ( dfPower > MaxPower || dfPower < 10 )
@@ -301,7 +334,9 @@ __myevic__ void DFCheckValuesValidity()
 	if ( dfModesSel & 0x80 || ( dfModesSel & 0x7F ) == 0x7F )
 		dfModesSel = 0;
 
-	if ( dfClkRatio < 10000 || dfClkRatio > 50000 )
+	if ( gFlags.is_vtwo )
+		dfClkRatio = 10000;
+	else if ( dfClkRatio < 10000 || dfClkRatio > 50000 )
 		dfClkRatio = RTC_DEF_CLK_RATIO;
 }
 
@@ -548,54 +583,87 @@ __myevic__ void InitDataFlash()
 
 	SetProductID();
 
-	switch ( dfHWVersion )
+	if ( ISVTWO )
 	{
-		case 102:
-		case 103:
-		case 106:
-		case 108:
-		case 109:
-		case 111:
-			DisplayModel = 1;
-			break;
-		default:
-			DisplayModel = 0;
-			break;
+		DisplayModel = ( dfHWVersion == 101 );
+	}
+	else if ( ISVTWOMINI )
+	{
+		DisplayModel = 0;
+	}
+	else
+	{
+		switch ( dfHWVersion )
+		{
+			case 102:
+			case 103:
+			case 106:
+			case 108:
+			case 109:
+			case 111:
+				DisplayModel = 1;
+				break;
+			default:
+				DisplayModel = 0;
+				break;
+		}
 	}
 
-	switch ( dfHWVersion )
+	if ( ISVTWOMINI || ISVTWO )
 	{
-		case 100:
-		case 102:
-		default:
-			AtoShuntValue = 115;
-			break;
-		case 101:
-		case 108:
-			AtoShuntValue = 125;
-			break;
-		case 103:
-		case 104:
-		case 105:
-		case 106:
-			AtoShuntValue = 110;
-			break;
-		case 107:
-		case 109:
-			AtoShuntValue = 120;
-			break;
-		case 110:
-		case 111:
-			AtoShuntValue = 105;
-			break;
+		AtoShuntRez = 115;
+	}
+	else
+	{
+		switch ( dfHWVersion )
+		{
+			case 100:
+			case 102:
+			default:
+				AtoShuntRez = 115;
+				break;
+			case 101:
+				AtoShuntRez = 125;
+				break;
+			case 108:
+				AtoShuntRez = 125;
+				break;
+			case 103:
+			case 104:
+			case 105:
+			case 106:
+				AtoShuntRez = 110;
+				break;
+			case 107:
+			case 109:
+				AtoShuntRez = 120;
+				break;
+			case 110:
+			case 111:
+				AtoShuntRez = 105;
+				break;
+		}
 	}
 
-	dfFWVersion	= 303;
-	MaxVWVolts	= 900;
-	MaxPower	= 800;
-	MaxTCPower	= 800;
+	dfFWVersion	= FWVERSION;
 
-	myprintf( "  APROM Version ......................... [%d.%d%d]\n", 3, 0, 3 );
+	MaxVolts	= 900;
+
+	if ( gFlags.is_mini )
+	{
+		MaxPower	= 750;
+		MaxTCPower	= 750;
+	}
+	else
+	{
+		MaxPower	= 800;
+		MaxTCPower	= 800;
+	}
+
+	myprintf( "  APROM Version ......................... [%d.%d%d]\n",
+				FWVERSION / 100,
+				FWVERSION / 10 % 10,
+				FWVERSION % 10 );
 	myprintf( "  Hardware Version ...................... [%d.%d%d]\n",
 				dfHWVersion / 100,
 				dfHWVersion / 10 % 10,
