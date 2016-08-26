@@ -16,7 +16,7 @@
 #define ISVTCMINI (!gFlags.is_vtwo && gFlags.is_mini)
 #define ISVTWOMINI (gFlags.is_vtwo && gFlags.is_mini)
 #define ISVTWO (gFlags.is_vtwo && !gFlags.is_mini)
-
+#define ISPRESA (!gFlags.is_vtwo && !gFlags.is_mini && gFlags.is_presa)
 
 //=============================================================================
 
@@ -68,6 +68,7 @@ typedef struct
 	int has_x32:1;
 	int is_vtwo:1;
 	int is_mini:1;
+	int is_presa:1;
 }
 gFlags_t;
 

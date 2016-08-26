@@ -48,6 +48,7 @@ __myevic__ void SetProductID()
 			dfProductID = u32Data;
 			dfMaxHWVersion = 0x00000001;
 			gFlags.is_vtwo = 1;
+			gFlags.is_presa = 0;
 			break;
 		}
 		else if ( u32Data == *(uint32_t*)"E043" )
@@ -56,6 +57,16 @@ __myevic__ void SetProductID()
 			dfMaxHWVersion = 0x00010001;
 			gFlags.is_vtwo = 1;
 			gFlags.is_mini = 0;
+			gFlags.is_presa = 0;
+			break;
+		}
+		else if ( u32Data == *(uint32_t*)"W007" )
+		{
+			dfProductID = u32Data;
+			dfMaxHWVersion = 0x00010001;
+			gFlags.is_vtwo = 0;
+			gFlags.is_mini = 0;
+			gFlags.is_presa = 1;
 			break;
 		}
 	}
@@ -587,7 +598,7 @@ __myevic__ void InitDataFlash()
 	{
 		DisplayModel = ( dfHWVersion == 101 );
 	}
-	else if ( ISVTWOMINI )
+	else if ( ISVTWOMINI || ISPRESA)
 	{
 		DisplayModel = 0;
 	}
@@ -612,6 +623,10 @@ __myevic__ void InitDataFlash()
 	if ( ISVTWOMINI || ISVTWO )
 	{
 		AtoShuntRez = 115;
+	}
+	else if ( ISPRESA )
+	{
+		AtoShuntRez = 100;
 	}
 	else
 	{
@@ -649,7 +664,7 @@ __myevic__ void InitDataFlash()
 
 	MaxVolts	= 1000;
 
-	if ( gFlags.is_mini )
+	if ( gFlags.is_mini || gFlags.is_presa )
 	{
 		MaxPower	= 800;
 		MaxTCPower	= 800;
