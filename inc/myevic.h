@@ -13,9 +13,9 @@
 
 #define FWVERSION 303
 
-#define ISVTCMINI (!gFlags.is_vtwo && gFlags.is_mini)
-#define ISVTWOMINI (gFlags.is_vtwo && gFlags.is_mini)
-#define ISVTWO (gFlags.is_vtwo && !gFlags.is_mini)
+#define ISVTCMINI (!gFlags.is_vtwo && gFlags.is_mini && !gFlags.is_presa)
+#define ISVTWOMINI (gFlags.is_vtwo && gFlags.is_mini && !gFlags.is_presa)
+#define ISVTWO (gFlags.is_vtwo && !gFlags.is_mini && !gFlags.is_presa)
 #define ISPRESA (!gFlags.is_vtwo && !gFlags.is_mini && gFlags.is_presa)
 
 //=============================================================================

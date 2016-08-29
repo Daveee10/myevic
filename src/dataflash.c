@@ -39,6 +39,7 @@ __myevic__ void SetProductID()
 	dfMaxHWVersion = 0x00010101;
 	gFlags.is_vtwo = 0;
 	gFlags.is_mini = 1;
+	gFlags.is_presa = 0;
 
 	for ( uint32_t offset = 0 ; offset < LDROM_SIZE ; offset += 4 )
 	{
@@ -48,7 +49,6 @@ __myevic__ void SetProductID()
 			dfProductID = u32Data;
 			dfMaxHWVersion = 0x00000001;
 			gFlags.is_vtwo = 1;
-			gFlags.is_presa = 0;
 			break;
 		}
 		else if ( u32Data == *(uint32_t*)"E043" )
@@ -57,14 +57,12 @@ __myevic__ void SetProductID()
 			dfMaxHWVersion = 0x00010001;
 			gFlags.is_vtwo = 1;
 			gFlags.is_mini = 0;
-			gFlags.is_presa = 0;
 			break;
 		}
 		else if ( u32Data == *(uint32_t*)"W007" )
 		{
 			dfProductID = u32Data;
 			dfMaxHWVersion = 0x00010001;
-			gFlags.is_vtwo = 0;
 			gFlags.is_mini = 0;
 			gFlags.is_presa = 1;
 			break;
@@ -598,7 +596,7 @@ __myevic__ void InitDataFlash()
 	{
 		DisplayModel = ( dfHWVersion == 101 );
 	}
-	else if ( ISVTWOMINI || ISPRESA)
+	else if ( ISVTWOMINI || ISPRESA )
 	{
 		DisplayModel = 0;
 	}
