@@ -124,7 +124,15 @@ __myevic__ void GetUserInput()
 		if ( gFlags.firing )
 		{
 			if ( LastInputs == 1 )
+			{
 				StopFire();
+				if ( !ISMODETC(dfMode) )
+				{
+					// Display last puff duration
+					// a little longer
+					ScreenDuration = 2;
+				}
+			}
 			gFlags.user_idle = 1;
 			LastInputs = -1;
 			KeyPressTime = 0;
@@ -226,38 +234,42 @@ __myevic__ void GetUserInput()
 			FireClicksEvent = 0;
 			Event = 0;
 
-			if ( FireClickCount == 1 )
+			switch ( FireClickCount )
 			{
-				FireClicksEvent = 15;	// single click
+				case 1:
+					FireClicksEvent = 15;	// single click
 
-				if ( !EditModeTimer || EditItemIndex != 4 )
-				{
-					Event = 1;	// fire
-				}
-			}
-			else if ( FireClickCount == 2 )
-			{
-				FireClicksEvent = EVENT_DOUBLE_FIRE;	// show date
-			}
-			else if ( FireClickCount == 3 )
-			{
-				FireClicksEvent = 16;	// edit mode
-			}
-			else if ( FireClickCount == 4 )
-			{
-				FireClicksEvent = EVENT_QUAD_FIRE;	// debug mode
-			}
-			else if ( FireClickCount == 5 )
-			{
-				FireClicksEvent = 17;	// Switch On/Off
-			}
-			else if ( FireClickCount == 10 )
-			{
-				FireClicksEvent = 31;	// board temp screen
-			}
-			else if ( FireClickCount == 20 )
-			{
-				Event = 29;	// firmware version screen
+					if ( !EditModeTimer || EditItemIndex != 4 )
+					{
+						Event = 1;	// fire
+					}
+					break;
+
+				case 2:
+					FireClicksEvent = EVENT_DOUBLE_FIRE; // show clock
+					break;
+
+				case 3:
+					FireClicksEvent = 16;	// edit mode
+					break;
+
+				case 4:
+					FireClicksEvent = EVENT_QUAD_FIRE;	// debug mode
+					break;
+
+				case 5:
+				case 6:
+				case 7:
+					FireClicksEvent = 17;	// Switch On/Off
+					break;
+
+				case 10:
+					FireClicksEvent = 31;	// board temp screen
+					break;
+
+				case 20:
+					Event = 29;	// firmware version screen
+					break;
 			}
 		}
 		else if ( UserInputs == 2 )
@@ -301,8 +313,15 @@ __myevic__ void GetUserInput()
 			if ( Screen == 59 )
 			{
 				UpdateDataFlash();
-				gFlags.refresh_display = 1;
-				Screen = 0;
+				if ( dfStatus.off )
+				{
+					gFlags.refresh_display = 1;
+					Screen = 0;
+				}
+				else
+				{
+					MainView();
+				}
 			}
 			else if ( Screen == 102 )
 			{
@@ -398,10 +417,6 @@ __myevic__ void GetUserInput()
 
 //=============================================================================
 // Event Handling
-//-----------------------------------------------------------------------------
-
-unsigned char myDbgFlag = 0;
-
 //-----------------------------------------------------------------------------
 
 __myevic__ int EvtFire()
@@ -681,7 +696,14 @@ __myevic__ int EvtDoubleFire()
 
 __myevic__ int EvtQuadFire()
 {
-	myDbgFlag ^= 1;
+	if ( dfStatus.dbgena )
+	{
+		gFlags.debug ^= 1;
+	}
+	else
+	{
+		gFlags.debug = 0;
+	}
 	gFlags.refresh_display = 1;
 	return 1;
 }
@@ -729,7 +751,7 @@ __myevic__ int EvtEnterMenus()
 __myevic__ int CustomEvents()
 {
 	int vret;
-	
+
 	vret = 0;
 
 	switch ( LastEvent )

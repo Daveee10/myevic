@@ -56,6 +56,13 @@ __myevic__ void ExpertMenuIDraw( int it, int line, int sel )
 				DrawString( String_HID, 36, line+2 );
 			break;
 
+		case 1:
+			DrawFillRect( 32, line, 63, line+12, 0 );
+			if ( dfStatus.dbgena )
+				DrawString( String_ON, 36, line+2 );
+			else
+				DrawString( String_OFF, 36, line+2 );
+
 		default:
 			break;
 	}
@@ -83,6 +90,12 @@ __myevic__ void ExpertMenuOnClick()
 			break;
 
 		case 1:
+			dfStatus.dbgena ^= 1;
+			if ( ! dfStatus.dbgena ) gFlags.debug = 0;
+			gFlags.refresh_display = 1;
+			break;
+			
+		case 2:
 			UpdateDataFlash();
 			InitUSB();
 			MainView();
@@ -464,10 +477,10 @@ __myevic__ int DTMenuOnEvent( int event )
 							if ( rtd.u32Year < RTC_YEAR2000 + 1000 ) ++rtd.u32Year;
 							break;
 						case 1:
-							rtd.u32Month = (rtd.u32Month+1) %12;
+							rtd.u32Month = rtd.u32Month %12 + 1;
 							break;
 						case 2:
-							rtd.u32Day = (rtd.u32Day+1) %31;
+							rtd.u32Day = rtd.u32Day %31 + 1;
 							break;
 					}
 					gFlags.refresh_display = 1;
@@ -602,13 +615,14 @@ const menu_t CoilsMenu =
 	CoilsISelect+1,
 	CoilsIClick+1,
 	CoilsMEvent+1,
-	6,
+	7,
 	{
 		{ String_NI, 0, -1, 0 },
 		{ String_TI, 0, -1, 0 },
 		{ String_SS, 0, -1, 0 },
 		{ String_TCR, 0, -1, 0 },
 		{ String_Zero_All, 0, -1, 0 },
+		{ String_TCRSet, 0, 59, 10 },
 		{ String_Exit, 0, 1, 0 }
 	}
 };
@@ -708,9 +722,10 @@ const menu_t ExpertMenu =
 	0,
 	ExpertMenuOnClick+1,
 	0,
-	2,
+	3,
 	{
 		{ String_USB, 0, -1, 0 },
+		{ String_DBG, 0, -1, 0 },
 		{ String_Exit, 0, 1, 30 }
 	}
 };

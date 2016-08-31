@@ -1,8 +1,13 @@
 ## **myevic**
 This is My eVic VTC Mini.
 
+### Compatible hardwares:
+* eVic VTC Mini
+* eVic VTwo Mini
+* eVic VTwo
+
 ### Based on:
-*Original 3.03 firmware*
+*Original VTC Mini 3.03 firmware*
 
 ### Main Features:
 My custom firmware is more or less identical to the official firmware - Just added some missing features.
@@ -51,7 +56,7 @@ There's many more to LOGO and Game menus now. See below.
 
     Coil management menu.
 
-    ![](http://i345.photobucket.com/albums/p374/ClockSelect/eVic/coils_zpsn29ef1h5.png)
+    ![](http://i345.photobucket.com/albums/p374/ClockSelect/eVic/coils_zpshuhlyme4.png)
     * On each line of the four TC modes:
 
         Click fire to switch to edit mode on the resistance.
@@ -60,9 +65,12 @@ There's many more to LOGO and Game menus now. See below.
         Bring the resistance to zero with - to unlock and reset it.
         You may also fire two seconds to zero the resistance.
     * Other lines:
-       * Zero All:
+      * Zero All:
 
-         Also zeroes all "START" mode resistances.
+        Zeroes all resistances; also zeroes all "START" mode saved resistance settings.
+      * TCR Set:
+      
+        Enters the TCR Set menu. This menu can also be accessed by switching off the box and pressing both Fire and Right regulatory button for 5 seconds.
       * Exit:
 
         Self explanatory.
@@ -93,18 +101,22 @@ Usage: First setup date & time. Wait a few hours to let the clock drift; then us
 
 * Expert
 
-  Some advanced options:
+    Some advanced options:
 
   * USB:
 
-    Choose between several USB modes:
-     * HID: Normal operation mode - factory setting. Disables anyother USB device than HID.
+        Choose between several USB modes:
+     * HID: Normal operation mode - factory setting. Disables any other USB device than HID.
        HID is always active, even in the two others modes of operation.
 
      * COM: A virtual COM interface; mainly used for debugging with a COM terminal such as putty.
 
      * DSK: A virtual drive to download the firmware file.
-     Connect the box to a PC, and a disk device will appear with a "FIRMWARE.BIN" file. This can be read and copied.
+     Connect the box to a PC, and a disk device will appear with a "FIRMWARE.BIN" file. This can be read and copied. This file is an encoded firmware file that can be uploaded to another device using evic-usb or the official Joyetech firmware tool.
+
+  * DBG
+  
+        Enables or disables the debug informations mode. Once the DBG option is set to "ON", Debug informations can be shown/hidden by clicking fire button four times. This option is OFF by default to prevent users to inadvertendly mess up their screen.
  
 * Miscs
   * LOGO
@@ -123,7 +135,7 @@ Usage: First setup date & time. Wait a few hours to let the clock drift; then us
 
 ### Build:
 Follow [evic-sdk::Readme] (https://github.com/ReservedField/evic-sdk/blob/master/README.md) instructions to:
-  * Setting up the environment
+  * Setup the environment
 
   * Install python-evic
 
@@ -133,5 +145,14 @@ Follow [evic-sdk::Readme] (https://github.com/ReservedField/evic-sdk/blob/master
 
   * To build invoke: ```EVICSDK=. make```
 
-### Known issues:
-  * TEMP mode (SS316 for sure other might be affected also) behaviour is currently differs from the original firmware. Ssetting a higher temperature is required.
+### Known quirks/issues:
+  * Temperature Control on SS316
+
+    Temperature Control on SS316 is different in this firmware when compared to the original one.
+    Depending on your setup, you might need to change you regular temperature setting.
+    It's often better to use Temperature Control in TCR mode with SS316L, adapting the TCR/Temperature values to the build by a dry cotton test.
+
+    *It's hard to find a consensusal value for the TCR of SS316L.
+    Anything from 88 to 100 can be found depending on the source.
+    The original value of 120 is obviously way too high.
+    steam-engine.org gives a value of 87.9, which seems reliable, therefore the TCR for SS316 was selected as 88 instead of original 120.*

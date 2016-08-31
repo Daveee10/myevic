@@ -69,6 +69,7 @@ typedef struct
 	int is_vtwo:1;
 	int is_mini:1;
 	int is_presa:1;
+	int debug:1;
 }
 gFlags_t;
 
@@ -89,10 +90,6 @@ extern void DrawHexLong( int x, int y, int v, int font );
 
 extern uint32_t sqrtul( uint32_t v );
 extern uint32_t GetFirmwareSize();
-
-//=============================================================================
-
-extern uint8_t myDbgFlag;
 
 //=============================================================================
 #endif /* __TESTC__ */

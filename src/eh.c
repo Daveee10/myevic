@@ -65,14 +65,16 @@ __myevic__ void EventHandler()
 
 		case 1:		// Fire
 		{
+			if ( Screen == 59 )
+			{
+				gFlags.edit_value ^= 1;
+				gFlags.refresh_display = 1;
+				ScreenDuration = 10;
+				return;
+			}
+
 			if ( dfStatus.off )
 			{
-				if ( Screen == 59 )
-				{
-					gFlags.edit_value ^= 1;
-					gFlags.refresh_display = 1;
-					ScreenDuration = 10;
-				}
 				return;
 			}
 
@@ -396,6 +398,7 @@ __myevic__ void EventHandler()
 			PD7 = 0;
 
 			gFlags.firing = 1;
+			FireDuration = 0;
 
 			if ( byte_20000048 == 1 ) byte_20000048 = 2;
 
@@ -527,8 +530,6 @@ __myevic__ void EventHandler()
 			return;
 
 		case 39:	// TCR Set menu select
-			if ( !(dfStatus.off) )
-				return;
 			gFlags.edit_value = 0;
 			EditTCRIndex = 0;
 			gFlags.refresh_display = 1;
@@ -702,6 +703,8 @@ __myevic__ void EventHandler()
 		case 15:	// Single Fire click
 			if ( dfStatus.off || gFlags.firing )
 				return;
+			if ( Screen == 59 )
+				return;
 			if ( Screen == 82 )
 				UpdateDataFlash();
 			if ( Screen == 83 )
@@ -801,29 +804,33 @@ __myevic__ void EventHandler()
 
 		case 3:		// - (minus or left) button
 		{
-			if ( dfStatus.off )
+			if ( Screen == 59 )
 			{
-				if ( Screen == 59 )
+				if ( gFlags.edit_value )
 				{
-					if ( gFlags.edit_value )
-					{
-						if ( EditTCRIndex >= 3 ) EditTCRIndex = 0;
+					if ( EditTCRIndex >= 3 ) EditTCRIndex = 0;
 
-						if ( dfTCRM[EditTCRIndex] > 1 )
-						{
-							--dfTCRM[EditTCRIndex];
-						}
-					}
-					else
+					if ( dfTCRM[EditTCRIndex] > 1 )
 					{
-						if ( EditTCRIndex )
-							--EditTCRIndex;
-						else
-							EditTCRIndex = 2;
+						--dfTCRM[EditTCRIndex];
 					}
 				}
+				else
+				{
+					if ( EditTCRIndex )
+						--EditTCRIndex;
+					else
+						EditTCRIndex = 2;
+				}
+				return;
 			}
-			else if ( Screen == 82 )
+
+			if ( dfStatus.off )
+			{
+				return;
+			}
+
+			if ( Screen == 82 )
 			{
 				dfStatus.nologo ^= 1;
 			}
@@ -1003,29 +1010,33 @@ __myevic__ void EventHandler()
 
 		case 2:		// + (plus or right) button
 		{
+			if ( Screen == 59 )
+			{
+				if ( gFlags.edit_value )
+				{
+					if ( EditTCRIndex > 2 ) EditTCRIndex = 0;
+
+					if ( dfTCRM[EditTCRIndex] < 999 )
+					{
+						++dfTCRM[EditTCRIndex];
+					}
+				}
+				else
+				{
+					++EditTCRIndex;
+					if ( ( EditTCRIndex ) > 2 ) EditTCRIndex = 0;
+				}
+				gFlags.refresh_display = 1;
+				ScreenDuration = 10;
+				return;
+			}
+
 			if ( dfStatus.off )
 			{
-				if ( Screen == 59 )
-				{
-					if ( gFlags.edit_value )
-					{
-						if ( EditTCRIndex > 2 ) EditTCRIndex = 0;
-
-						if ( dfTCRM[EditTCRIndex] < 999 )
-						{
-							++dfTCRM[EditTCRIndex];
-						}
-					}
-					else
-					{
-						++EditTCRIndex;
-						if ( ( EditTCRIndex ) > 2 ) EditTCRIndex = 0;
-					}
-					gFlags.refresh_display = 1;
-					ScreenDuration = 10;
-				}
+				return;
 			}
-			else if (( Screen >= 80 ) && ( Screen < 100 ))
+
+			if (( Screen >= 80 ) && ( Screen < 100 ))
 			{
 				if ( ++MenuPage > 2 )
 				{
