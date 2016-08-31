@@ -596,7 +596,7 @@ __myevic__ void InitDataFlash()
 	{
 		DisplayModel = ( dfHWVersion == 101 );
 	}
-	else if ( ISVTWOMINI || ISPRESA )
+	else if ( ISVTWOMINI )
 	{
 		DisplayModel = 0;
 	}
